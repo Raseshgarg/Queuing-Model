@@ -13,6 +13,7 @@ Simulated Queuing Model in R to analyze different set up for a Gas Station
 **Conent:** 
 - R code used for simulation
 - Final Report comparing different combination of queues and servers. 
+- Output for each model, compiled in an excel workbook. 
 
 **Key Features Analyzed:** Waiting Time, Percentage customer Served, Utilization of servers, Queue Length.
 
