@@ -22,26 +22,26 @@ output_file_name = "Model_C.xlsx"
 customer <-
   trajectory("Customer's path") %>%
   log_("Here I am") %>%
-  set_attribute("start_time", function() {now(bank)}) %>%
+  set_attribute("start_time", function() {now(gas)}) %>%
   
   renege_in(max_wait_time,
             out = trajectory("Reneging customer") %>%
               log_(function() {
-                paste("Waited", now(bank) - get_attribute(bank, "start_time"), "I am off")
+                paste("Waited", now(gas) - get_attribute(gas, "start_time"), "I am off")
               })) %>%
   
-  simmer::select(c("counter1", "counter2","counter3"), policy = "shortest-queue") %>%
+  simmer::select(c("counter1", "counter2","counter1"), policy = "shortest-queue") %>%
   seize_selected() %>%
   renege_abort() %>% 
-  log_(function() {paste("Waited: ", now(bank) - get_attribute(bank, "start_time"))}) %>%
+  log_(function() {paste("Waited: ", now(gas) - get_attribute(gas, "start_time"))}) %>%
   timeout(function() {rexp(1,1/mean_service_time)}) %>%
   release_selected() %>%
-  log_(function() {paste("Finished: ", now(bank))})
+  log_(function() {paste("Finished: ", now(gas))})
 
+####
 
-
-bank <-
-  simmer("bank") %>%
+gas <-
+  simmer("gas") %>%
   ### Adding resources (counters with respective number of servers)
   add_resource("counter1",2) %>%  ### 2 is for number of servers per queue
   add_resource("counter2", 2) %>%
@@ -53,7 +53,7 @@ bank <-
 ## WSimulating above set up many times
 
 envs <- mclapply(1:no_of_simulations, function(i) {
-  bank %>% run(until = simulation_time) %>%
+  gas %>% run(until = simulation_time) %>%
     wrap()
 })
 
@@ -109,6 +109,8 @@ utilisation <- function(x) {
 }
 x  = lapply(envs, utilisation)
 
+ifelse for start time, ifelse for end time
+
 util_res = c('resource_utilization', mean(unlist(x)),mean(unlist(x)) - 1.96*sd(unlist(x)),min(100, mean(unlist(x)) + 1.96*sd(unlist(x))))
 
 ##### Combining all metrices into a dataframe
@@ -137,5 +139,3 @@ plot(arrivals, metric = "waiting_time")+
        y="Waiting Time (mins)", 
        x="Simulation Time (mins)", 
        title="Waiting Time Evolution")
-
-##===============================================
